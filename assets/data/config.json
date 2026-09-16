@@ -1,0 +1,89 @@
+{
+  "agents": {
+    "fade":     "https://fade.onrender.com",
+    "deadlock": "https://deadlock.onrender.com",
+    "sage":     "https://sage.onrender.com",
+    "astra":    "https://astra.onrender.com",
+    "jett":     "https://jett.onrender.com",
+    "phoenix":  "https://phoenix.onrender.com",
+    "harbor":   "https://harbor.onrender.com",
+    "neon":     "https://neon.onrender.com",
+    "yoru":     "https://yoru.onrender.com"
+  },
+
+  "alpha": {
+    "master": "fade",
+    "agents": ["fade", "deadlock"]
+  },
+
+  "buckets": {
+    "jio_heavy": {
+      "files": [
+        "jio_hindi.json",
+        "jio_gujarati.json",
+        "jio_marathi.json"
+      ],
+      "processors": ["sage", "astra"]
+    },
+    "jio_regional": {
+      "files": [
+        "jio_bengali.json",
+        "jio_kannada.json",
+        "jio_odia.json",
+        "jio_tamil.json",
+        "jio_telugu.json",
+        "jio_malayalam.json"
+      ],
+      "processors": ["jett"]
+    },
+    "operators_airtel": {
+      "files": [
+        "airtel_hindi.json",
+        "airtel_marathi.json",
+        "airtel_odia.json",
+        "airtel_bengali.json",
+        "airtel_telugu.json",
+        "airtel_tamil.json",
+        "airtel_gujarati.json"
+      ],
+      "processors": ["phoenix"]
+    },
+    "operators_vi_bsnl": {
+      "files": [
+        "vi_hindi.json",
+        "vi_gujarati.json",
+        "vi_tamil.json",
+        "vi_marathi.json",
+        "vi_bengali.json",
+        "bsnl_hindi.json"
+      ],
+      "processors": ["harbor"]
+    },
+    "categories": {
+      "files": [
+        "banking_hindi.json",
+        "banking_gujarati.json",
+        "otp_gujarati.json",
+        "otp_kannada.json",
+        "otp_hindi.json",
+        "telecom_hindi.json",
+        "telecom_bengali.json",
+        "telecom_tamil.json",
+        "telecom_kannada.json",
+        "telecom_gujarati.json",
+        "telecom_odia.json",
+        "telecom_telugu.json",
+        "telecom_marathi.json"
+      ],
+      "processors": ["neon"]
+    },
+    "misc": {
+      "files": [
+        "utility_tamil.json",
+        "utility_hindi.json",
+        "travel_hindi.json"
+      ],
+      "processors": ["yoru"]
+    }
+  }
+}
