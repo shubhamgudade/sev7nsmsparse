@@ -129,14 +129,19 @@ function mergeEvidence(evidenceList) {
    Called by server.js when ROLE=alpha
    ═══════════════════════════════════════════════════ */
 
+const RE_TEN_DIGIT = /[6-9]\d{9}/;
+
 async function routeAndForward(deviceId, smsList) {
     const config = getConfig();
 
     // group SMS by bucket
     const bucketMap = {}; // bucketName → [smsText]
     for (const text of smsList) {
+        // pre-filter: must contain a 10-digit Indian mobile number
+        if (!RE_TEN_DIGIT.test(text)) continue;
+
         const bucket = classifySms(text);
-        if (!bucket) continue; // dropped
+        if (!bucket) continue; // no keyword match — drop
         if (!bucketMap[bucket]) bucketMap[bucket] = [];
         bucketMap[bucket].push(text);
     }
