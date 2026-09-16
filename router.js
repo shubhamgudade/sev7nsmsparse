@@ -1,3 +1,5 @@
+
+
 const fs   = require("fs");
 const path = require("path");
 
@@ -820,8 +822,24 @@ const CATEGORY_KEYWORDS = {
 };
 
 /* ═══════════════════════════════════════════════════
+   CONFIG CACHE
+   ═══════════════════════════════════════════════════ */
+
+let _config = null;
+
+function getConfig() {
+    if (_config) return _config;
+    try {
+        _config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
+        return _config;
+    } catch (err) {
+        throw new Error(`[router] config.json read failed: ${err.message}`);
+    }
+}
+
+/* ═══════════════════════════════════════════════════
    UNICODE SCRIPT DETECTION
-   Decides jio_heavy vs jio_regional after jio keyword hit
+   Only used for jio — decides heavy vs regional
    ═══════════════════════════════════════════════════ */
 
 function detectScript(text) {
@@ -848,34 +866,19 @@ function detectScript(text) {
         else if (cp >= 0x0C80 && cp <= 0x0CFF) counts.kannada++;
         else if (cp >= 0x0D00 && cp <= 0x0D7F) counts.malayalam++;
     }
-    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    const [script, count] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    return { script, count };
 }
 
 function getJioBucket(text) {
-    const [script, count] = detectScript(text);
-    if (count === 0) return "jio_heavy"; // english fallback → heavy (sage+astra)
+    const { script, count } = detectScript(text);
+    if (count === 0) return "jio_heavy"; // english → heavy
     if (script === "devanagari" || script === "gujarati") return "jio_heavy";
     return "jio_regional";
 }
 
 /* ═══════════════════════════════════════════════════
-   CONFIG CACHE
-   ═══════════════════════════════════════════════════ */
-
-let _config = null;
-
-function getConfig() {
-    if (_config) return _config;
-    try {
-        _config = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf8"));
-        return _config;
-    } catch (err) {
-        throw new Error(`[router] config.json read failed: ${err.message}`);
-    }
-}
-
-/* ═══════════════════════════════════════════════════
-   KEYWORD DETECTION
+   OPERATOR DETECTION — hardcoded split logic
    ═══════════════════════════════════════════════════ */
 
 function matchOperator(text) {
@@ -888,8 +891,22 @@ function matchOperator(text) {
     return null;
 }
 
+/* ═══════════════════════════════════════════════════
+   CATEGORY DETECTION — fully dynamic from config.json
+   Any bucket not handled by operator logic falls here.
+   Buckets in config that aren't jio_heavy/jio_regional/
+   operators_airtel/operators_vi_bsnl are auto-matched
+   against CATEGORY_KEYWORDS by bucket name.
+   ═══════════════════════════════════════════════════ */
+
+const OPERATOR_BUCKETS = new Set([
+    "jio_heavy", "jio_regional",
+    "operators_airtel", "operators_vi_bsnl"
+]);
+
 function matchCategory(text) {
     const lower = text.toLowerCase();
+    // iterate keyword table — bucket names must match config.json bucket keys
     for (const [bucket, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
         for (const kw of keywords) {
             if (lower.includes(kw.toLowerCase())) return bucket;
@@ -897,6 +914,10 @@ function matchCategory(text) {
     }
     return null;
 }
+
+/* ═══════════════════════════════════════════════════
+   CLASSIFY — operator first, then category, else drop
+   ═══════════════════════════════════════════════════ */
 
 function classifySms(text) {
     const op = matchOperator(text);
@@ -911,16 +932,21 @@ function classifySms(text) {
 }
 
 /* ═══════════════════════════════════════════════════
-   PROCESSOR URL RESOLUTION
+   PROCESSOR URL RESOLUTION — dynamic from config
    ═══════════════════════════════════════════════════ */
 
-function resolveUrls(processorNames) {
+function resolveProcessors(bucketName) {
     const config = getConfig();
-    return processorNames.map(name => config.agents[name]).filter(Boolean);
+    const bucket = config.buckets[bucketName];
+    if (!bucket || !Array.isArray(bucket.processors)) return [];
+    return bucket.processors
+        .map(name => config.agents[name])
+        .filter(Boolean);
 }
 
 async function forwardToProcessors(urls, deviceId, smsBatch) {
     if (!urls.length || !smsBatch.length) return {};
+
     const sliceSize = Math.ceil(smsBatch.length / urls.length);
     const requests  = urls.map((url, i) => {
         const slice = smsBatch.slice(i * sliceSize, (i + 1) * sliceSize);
@@ -934,6 +960,7 @@ async function forwardToProcessors(urls, deviceId, smsBatch) {
         .then(data => data.evidence || {})
         .catch(() => ({}));
     });
+
     const results = await Promise.all(requests);
     return mergeEvidence(results);
 }
@@ -960,48 +987,59 @@ function mergeEvidence(evidenceList) {
 }
 
 /* ═══════════════════════════════════════════════════
-   MAIN ROUTE + FORWARD
+   MAIN ROUTE + FORWARD — fully dynamic
+   Reads all buckets from config, not hardcoded
    ═══════════════════════════════════════════════════ */
 
 const RE_TEN_DIGIT = /[6-9]\d{9}/;
 
 async function routeAndForward(deviceId, smsList) {
-    const config = getConfig();
+    const config    = getConfig();
     const bucketMap = {};
+
     for (const text of smsList) {
         if (!RE_TEN_DIGIT.test(text)) continue;
         const bucket = classifySms(text);
         if (!bucket) continue;
+        // validate bucket exists in config — drop if not
+        if (!config.buckets[bucket]) continue;
         if (!bucketMap[bucket]) bucketMap[bucket] = [];
         bucketMap[bucket].push(text);
     }
+
     const promises = Object.entries(bucketMap).map(([bucket, sms]) => {
-        const group = config.buckets[bucket];
-        if (!group) return Promise.resolve({});
-        const urls = resolveUrls(group.processors);
+        const urls = resolveProcessors(bucket);
         return forwardToProcessors(urls, deviceId, sms);
     });
+
     const results = await Promise.all(promises);
     return mergeEvidence(results);
 }
 
 /* ═══════════════════════════════════════════════════
-   ALPHA DISTRIBUTION
+   ALPHA DISTRIBUTION — dynamic agent list from config
+   Add agents to config.alpha.agents to scale
    ═══════════════════════════════════════════════════ */
 
 async function distributeAcrossAlphas(deviceId, smsList) {
     const config     = getConfig();
     const masterName = config.alpha.master;
-    const allAlphas  = (config.alpha.agents || [])
+
+    // all alphas except master — fully dynamic
+    const otherAlphas = (config.alpha.agents || [])
         .filter(name => name !== masterName)
         .map(name => config.agents[name])
         .filter(Boolean);
 
-    if (!allAlphas.length) return routeAndForward(deviceId, smsList);
+    if (!otherAlphas.length) {
+        return routeAndForward(deviceId, smsList);
+    }
 
-    const allWorkers = [null, ...allAlphas];
+    // null = process locally (master), rest = other alpha URLs
+    const allWorkers = [null, ...otherAlphas];
     const sliceSize  = Math.ceil(smsList.length / allWorkers.length);
-    const promises   = allWorkers.map((url, i) => {
+
+    const promises = allWorkers.map((url, i) => {
         const slice = smsList.slice(i * sliceSize, (i + 1) * sliceSize);
         if (!slice.length) return Promise.resolve({});
         if (!url) return routeAndForward(deviceId, slice);
@@ -1014,6 +1052,7 @@ async function distributeAcrossAlphas(deviceId, smsList) {
         .then(data => data.evidence || {})
         .catch(() => ({}));
     });
+
     const results = await Promise.all(promises);
     return mergeEvidence(results);
 }
