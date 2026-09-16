@@ -2,13 +2,9 @@
   "agents": {
     "fade":     "https://sev7nsmsparse.onrender.com",
     "deadlock": "https://sev7nsmsparse-uc81.onrender.com",
-    "sage":     "https://sage.onrender.com",
-    "astra":    "https://astra-cftu.onrender.com",
-    "jett":     "https://jett.onrender.com",
-    "phoenix":  "https://phoenix.onrender.com",
-    "harbor":   "https://harbor.onrender.com",
-    "neon":     "https://neon.onrender.com",
-    "yoru":     "https://yoru.onrender.com"
+    
+    "astra":    "https://astra-cftu.onrender.com"
+    
   },
 
   "alpha": {
@@ -23,7 +19,7 @@
         "jio_gujarati.json",
         "jio_marathi.json"
       ],
-      "processors": ["sage", "astra"]
+      "processors": ["astra"]
     },
     "jio_regional": {
       "files": [
@@ -34,7 +30,7 @@
         "jio_telugu.json",
         "jio_malayalam.json"
       ],
-      "processors": ["jett"]
+      "processors": ["astra"]
     },
     "operators_airtel": {
       "files": [
@@ -46,7 +42,7 @@
         "airtel_tamil.json",
         "airtel_gujarati.json"
       ],
-      "processors": ["phoenix"]
+      "processors": ["astra"]
     },
     "operators_vi_bsnl": {
       "files": [
@@ -57,7 +53,7 @@
         "vi_bengali.json",
         "bsnl_hindi.json"
       ],
-      "processors": ["harbor"]
+      "processors": ["astra"]
     },
     "categories": {
       "files": [
@@ -75,7 +71,7 @@
         "telecom_telugu.json",
         "telecom_marathi.json"
       ],
-      "processors": ["neon"]
+      "processors": ["astra"]
     },
     "misc": {
       "files": [
@@ -83,7 +79,7 @@
         "utility_hindi.json",
         "travel_hindi.json"
       ],
-      "processors": ["yoru"]
+      "processors": ["astra"]
     }
   }
 }
