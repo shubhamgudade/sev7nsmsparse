@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "bucket": "otp_kannada",
+    "count": 2
+  },
+  "templates": [
+    {
+      "serial": 2350,
+      "group_size": 3,
+      "group_serials": [
+        2350,
+        2989,
+        16573
+      ],
+      "language": "indic",
+      "occurrences_total": 3,
+      "template": "ಈ OTP {NUMBER} ಯು ನಿಮ್ಮ ಹೆಸರಿನ CHANDRAMMA({NUMBER}) ಪಡಿತರ ಚೀಟಿ {NUMBER} ಗೆ ಮೊಬೈಲ್‌ ಸಂಖ್ಯೆ {PHONE} ಯನ್ನು ಮೌಲ್ಯೀಕರಿಸಲು ಆಗಿರುತ್ತದೆ. The OTP for validating the mobile number{PHONE} of CHANDRAMMA({NUMBER}) against Ration Card number {NUMBER} is {NUMBER} FROM-FCSKAR",
+      "regex": "(?i)ಈ[\\s.,;:_\\-]*OTP[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*ಯು[\\s.,;:_\\-]*ನಿಮ್ಮ[\\s.,;:_\\-]*ಹೆಸರಿನ[\\s.,;:_\\-]*CHANDRAMMA\\((?:[^\\s{]+)\\)[\\s.,;:_\\-]*ಪಡಿತರ[\\s.,;:_\\-]*ಚೀಟಿ[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*ಗೆ[\\s.,;:_\\-]*ಮೊಬೈಲ್‌[\\s.,;:_\\-]*ಸಂಖ್ಯೆ[\\s.,;:_\\-]*(\\+?91[\\s\\-]?[6-9]\\d{9}|[6-9]\\d{9})[\\s.,;:_\\-]*ಯನ್ನು[\\s.,;:_\\-]*ಮೌಲ್ಯೀಕರಿಸಲು[\\s.,;:_\\-]*ಆಗಿರುತ್ತದೆ\\.[\\s.,;:_\\-]*The[\\s.,;:_\\-]*OTP[\\s.,;:_\\-]*for[\\s.,;:_\\-]*validating[\\s.,;:_\\-]*the[\\s.,;:_\\-]*mobile[\\s.,;:_\\-]*number(\\+?91[\\s\\-]?[6-9]\\d{9}|[6-9]\\d{9})[\\s.,;:_\\-]*of[\\s.,;:_\\-]*CHANDRAMMA\\((?:[^\\s{]+)\\)[\\s.,;:_\\-]*against[\\s.,;:_\\-]*Ration[\\s.,;:_\\-]*Card[\\s.,;:_\\-]*number[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*is[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*FROM\\-FCSKAR"
+    },
+    {
+      "serial": 16574,
+      "group_size": 1,
+      "group_serials": [
+        16574
+      ],
+      "language": "indic",
+      "occurrences_total": 1,
+      "template": "ಈ OTP {NUMBER} ಯು ನಿಮ್ಮ ಹೆಸರಿನ LAKSHMI ARJUNAPPA LAMANI({NUMBER}) ಪಡಿತರ ಚೀಟಿ {NUMBER} ಗೆ ಮೊಬೈಲ್‌ ಸಂಖ್ಯೆ {PHONE} ಯನ್ನು ಮೌಲ್ಯೀಕರಿಸಲು ಆಗಿರುತ್ತದೆ. The OTP for validating the mobile number{PHONE} of LAKSHMI ARJUNAPPA LAMANI({NUMBER}) against Ration Card number {NUMBER} is {NUMBER} FROM-FCSKAR",
+      "regex": "(?i)ಈ[\\s.,;:_\\-]*OTP[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*ಯು[\\s.,;:_\\-]*ನಿಮ್ಮ[\\s.,;:_\\-]*ಹೆಸರಿನ[\\s.,;:_\\-]*LAKSHMI[\\s.,;:_\\-]*ARJUNAPPA[\\s.,;:_\\-]*LAMANI\\((?:[^\\s{]+)\\)[\\s.,;:_\\-]*ಪಡಿತರ[\\s.,;:_\\-]*ಚೀಟಿ[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*ಗೆ[\\s.,;:_\\-]*ಮೊಬೈಲ್‌[\\s.,;:_\\-]*ಸಂಖ್ಯೆ[\\s.,;:_\\-]*(\\+?91[\\s\\-]?[6-9]\\d{9}|[6-9]\\d{9})[\\s.,;:_\\-]*ಯನ್ನು[\\s.,;:_\\-]*ಮೌಲ್ಯೀಕರಿಸಲು[\\s.,;:_\\-]*ಆಗಿರುತ್ತದೆ\\.[\\s.,;:_\\-]*The[\\s.,;:_\\-]*OTP[\\s.,;:_\\-]*for[\\s.,;:_\\-]*validating[\\s.,;:_\\-]*the[\\s.,;:_\\-]*mobile[\\s.,;:_\\-]*number(\\+?91[\\s\\-]?[6-9]\\d{9}|[6-9]\\d{9})[\\s.,;:_\\-]*of[\\s.,;:_\\-]*LAKSHMI[\\s.,;:_\\-]*ARJUNAPPA[\\s.,;:_\\-]*LAMANI\\((?:[^\\s{]+)\\)[\\s.,;:_\\-]*against[\\s.,;:_\\-]*Ration[\\s.,;:_\\-]*Card[\\s.,;:_\\-]*number[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*is[\\s.,;:_\\-]*(?:[^\\s{]+)[\\s.,;:_\\-]*FROM\\-FCSKAR"
+    }
+  ]
+}
