@@ -1,11 +1,10 @@
 const fs   = require("fs");
 const path = require("path");
 
-const BUCKET_GROUP  = process.env.BUCKET_GROUP || "";
-const DATA_DIR      = path.resolve(__dirname, "../assets/data");
-const CONFIG_PATH   = path.resolve(__dirname, "../assets/data/config.json");
+const SERVICE_NAME = (process.env.SERVICE_NAME || "").toLowerCase();
+const DATA_DIR     = path.resolve(__dirname, "../assets/data");
+const CONFIG_PATH  = path.resolve(__dirname, "../assets/data/config.json");
 
-// loaded state: { bucketName: [{ serial, re }] }
 let _buckets = null;
 
 function readConfig() {
@@ -45,16 +44,32 @@ function loadBucketFile(filename) {
     }
 }
 
+function resolveBucketNames(config) {
+    if (!SERVICE_NAME) {
+        // no SERVICE_NAME — load everything (local dev / fallback)
+        return Object.keys(config.buckets);
+    }
+
+    // scan config.buckets — find every bucket this service is listed in
+    const mine = [];
+    for (const [bucketName, bucket] of Object.entries(config.buckets)) {
+        if (Array.isArray(bucket.processors) && bucket.processors.includes(SERVICE_NAME)) {
+            mine.push(bucketName);
+        }
+    }
+
+    if (!mine.length) {
+        console.warn(`[loader] SERVICE_NAME="${SERVICE_NAME}" not found in any bucket processors — loading nothing`);
+    }
+
+    return mine;
+}
+
 async function initBuckets() {
     if (_buckets) return _buckets;
 
-    const config = readConfig();
-
-    // BUCKET_GROUP is a comma-separated list of bucket names this omega handles
-    // e.g. BUCKET_GROUP=jio_heavy,jio_regional
-    const groupNames = BUCKET_GROUP
-        ? BUCKET_GROUP.split(",").map(s => s.trim()).filter(Boolean)
-        : Object.keys(config.buckets);
+    const config     = readConfig();
+    const groupNames = resolveBucketNames(config);
 
     _buckets = {};
 
@@ -83,7 +98,6 @@ function loadBuckets() {
     return _buckets;
 }
 
-// flat list of all compiled templates across all loaded buckets
 function getAllTemplates() {
     const buckets = loadBuckets();
     return Object.values(buckets).flat();
