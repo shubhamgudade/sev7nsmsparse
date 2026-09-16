@@ -1,0 +1,127 @@
+services:
+
+  # ─── ALPHA: Fade (Master Coordinator) ───────────────────────────────────────
+  - type: web
+    name: fade
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: alpha
+      - key: MASTER
+        value: "true"
+      - key: SERVICE_NAME
+        value: fade
+
+  # ─── ALPHA: Deadlock (Secondary Coordinator) ────────────────────────────────
+  - type: web
+    name: deadlock
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: alpha
+      - key: MASTER
+        value: "false"
+      - key: SERVICE_NAME
+        value: deadlock
+
+  # ─── OMEGA: Sage (jio_heavy) ────────────────────────────────────────────────
+  - type: web
+    name: sage
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: jio_heavy
+      - key: SERVICE_NAME
+        value: sage
+
+  # ─── OMEGA: Astra (jio_heavy replica) ───────────────────────────────────────
+  - type: web
+    name: astra
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: jio_heavy
+      - key: SERVICE_NAME
+        value: astra
+
+  # ─── OMEGA: Jett (jio_regional) ─────────────────────────────────────────────
+  - type: web
+    name: jett
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: jio_regional
+      - key: SERVICE_NAME
+        value: jett
+
+  # ─── OMEGA: Phoenix (operators_airtel) ──────────────────────────────────────
+  - type: web
+    name: phoenix
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: operators_airtel
+      - key: SERVICE_NAME
+        value: phoenix
+
+  # ─── OMEGA: Harbor (operators_vi_bsnl) ──────────────────────────────────────
+  - type: web
+    name: harbor
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: operators_vi_bsnl
+      - key: SERVICE_NAME
+        value: harbor
+
+  # ─── OMEGA: Neon (categories) ───────────────────────────────────────────────
+  - type: web
+    name: neon
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: categories
+      - key: SERVICE_NAME
+        value: neon
+
+  # ─── OMEGA: Yoru (misc) ─────────────────────────────────────────────────────
+  - type: web
+    name: yoru
+    runtime: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ROLE
+        value: omega
+      - key: BUCKET_GROUP
+        value: misc
+      - key: SERVICE_NAME
+        value: yoru
