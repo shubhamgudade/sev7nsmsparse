@@ -104,7 +104,7 @@ app.use("/monitor", express.static(MONITOR_DIR));
    MONITOR API — /monitor/api/*
    ═══════════════════════════════════════════════════ */
 
-const CONFIG_PATH = path.resolve(__dirname, "assets/data/config.json");
+const CONFIG_PATH = path.resolve(__dirname, "../assets/data/config.json");
 
 function readConfig() {
     try {
